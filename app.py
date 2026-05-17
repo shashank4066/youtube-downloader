@@ -82,7 +82,6 @@ def is_safe_path(basedir, path):
 @app.after_request
 def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '0'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
@@ -93,7 +92,7 @@ def add_security_headers(response):
         "img-src 'self' data: https:; "
         "script-src 'self' 'unsafe-inline'; "
         "connect-src 'self'; "
-        "frame-src 'none'; "
+        "frame-ancestors 'self' https://huggingface.co https://*.hf.space; "
         "object-src 'none'"
     )
     if 'X-Forwarded-Proto' in request.headers and request.headers['X-Forwarded-Proto'] == 'https':
