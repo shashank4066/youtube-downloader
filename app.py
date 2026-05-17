@@ -423,5 +423,6 @@ def internal_error(e):
     return jsonify({'error': 'Internal server error.'}), 500
 
 if __name__ == '__main__':
-    logger.info('Starting YouTube Downloader')
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    logger.info(f'Starting YouTube Downloader on port {port}')
+    app.run(host='0.0.0.0', port=port)
