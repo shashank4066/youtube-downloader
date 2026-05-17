@@ -169,10 +169,10 @@ def get_info():
             'extract_flat': False,
             'socket_timeout': 60,
             'retries': 5,
-            'nocheckcertificate': True,
+            'source_address': '0.0.0.0',
             'youtube_include_dash_manifest': False,
             'youtube_include_hls_manifest': False,
-            'extractor_args': {'youtube': {'player_client': ['web', 'mweb']}},
+            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -300,10 +300,10 @@ def download():
             'noplaylist': True,
             'socket_timeout': 60,
             'retries': 5,
-            'nocheckcertificate': True,
+            'source_address': '0.0.0.0',
             'youtube_include_dash_manifest': False,
             'youtube_include_hls_manifest': False,
-            'extractor_args': {'youtube': {'player_client': ['web', 'mweb']}},
+            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -357,9 +357,15 @@ def download():
             'format': fmt,
             'merge_output_format': 'mp4',
             'postprocessor_args': ['-c', 'copy'],
-            'socket_timeout': 30,
-            'retries': 3,
-            'fragment_retries': 3,
+            'socket_timeout': 60,
+            'retries': 5,
+            'fragment_retries': 5,
+            'source_address': '0.0.0.0',
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+            },
         }
 
         if download_type == 'audio':
