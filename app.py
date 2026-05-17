@@ -17,6 +17,21 @@ if os.name == 'nt':
     if os.path.isdir(FFMPEG_DIR) and FFMPEG_DIR not in os.environ.get('PATH', ''):
         os.environ['PATH'] = FFMPEG_DIR + os.pathsep + os.environ.get('PATH', '')
 
+# --- YouTube Cookie Authentication ---
+COOKIE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
+cookie_content = os.environ.get('YT_COOKIES', '')
+if cookie_content:
+    with open(COOKIE_FILE, 'w') as f:
+        f.write(cookie_content)
+    logger.info('YouTube cookies loaded from YT_COOKIES environment variable')
+else:
+    if os.path.isfile(COOKIE_FILE):
+        logger.info('Using existing cookies.txt file')
+    else:
+        COOKIE_FILE = None
+        logger.warning('No YouTube cookies configured. Bot detection may block requests from datacenter IPs. '
+                       'Set the YT_COOKIES secret in your Hugging Face Space settings.')
+
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
@@ -169,13 +184,15 @@ def get_info():
             'socket_timeout': 60,
             'retries': 5,
             'source_address': '0.0.0.0',
-            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+            'extractor_args': {'youtube': {'player_client': ['mweb', 'ios']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
             },
         }
+        if COOKIE_FILE:
+            ydl_opts['cookiefile'] = COOKIE_FILE
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
 
@@ -298,13 +315,15 @@ def download():
             'socket_timeout': 60,
             'retries': 5,
             'source_address': '0.0.0.0',
-            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+            'extractor_args': {'youtube': {'player_client': ['mweb', 'ios']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
             },
         }
+        if COOKIE_FILE:
+            base_opts['cookiefile'] = COOKIE_FILE
         with yt_dlp.YoutubeDL(base_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             video_id = info.get('id', 'unknown')
@@ -356,13 +375,15 @@ def download():
             'retries': 5,
             'fragment_retries': 5,
             'source_address': '0.0.0.0',
-            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+            'extractor_args': {'youtube': {'player_client': ['mweb', 'ios']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
             },
         }
+        if COOKIE_FILE:
+            ydl_opts['cookiefile'] = COOKIE_FILE
 
         if download_type == 'audio':
             ydl_opts['format'] = 'bestaudio/best'
