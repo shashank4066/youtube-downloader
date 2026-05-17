@@ -167,7 +167,11 @@ def get_info():
             'no_warnings': True,
             'noplaylist': True,
             'extract_flat': False,
-            'extractor_args': {'youtube': {'player_client': ['android']}},
+            'socket_timeout': 60,
+            'retries': 5,
+            'youtube_include_dash_manifest': False,
+            'youtube_include_hls_manifest': False,
+            'extractor_args': {'youtube': {'player_client': ['web', 'mweb']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -260,10 +264,10 @@ def get_info():
 
     except yt_dlp.utils.DownloadError as e:
         logger.warning(f'DownloadError for {url}: {e}')
-        return jsonify({'error': 'Failed to fetch video. Check the URL and try again.'}), 400
+        return jsonify({'error': f'Failed to fetch video: {e}'}), 400
     except Exception as e:
         logger.error(f'Info error for {url}: {e}')
-        return jsonify({'error': 'An error occurred while fetching video info.'}), 500
+        return jsonify({'error': f'An error occurred: {e}'}), 500
 
 @app.route('/download', methods=['POST'])
 @rate_limit
@@ -293,7 +297,9 @@ def download():
             'quiet': True,
             'no_warnings': True,
             'noplaylist': True,
-            'extractor_args': {'youtube': {'player_client': ['android']}},
+            'youtube_include_dash_manifest': False,
+            'youtube_include_hls_manifest': False,
+            'extractor_args': {'youtube': {'player_client': ['web', 'mweb']}},
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
