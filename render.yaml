@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: youtube-downloader
+    env: python
+    buildCommand: |
+      apt-get update -qq && apt-get install -y -qq ffmpeg
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 2 --threads 2 --timeout 120 --access-logfile -
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
