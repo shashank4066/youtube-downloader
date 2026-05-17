@@ -279,10 +279,10 @@ def get_info():
 
     except yt_dlp.utils.DownloadError as e:
         logger.warning(f'DownloadError for {url}: {e}')
-        return jsonify({'error': f'Failed to fetch video: {e}'}), 400
+        return jsonify({'error': 'Failed to fetch video. Check the URL and try again.'}), 400
     except Exception as e:
         logger.error(f'Info error for {url}: {e}')
-        return jsonify({'error': f'An error occurred: {e}'}), 500
+        return jsonify({'error': 'An error occurred while fetching video info.'}), 500
 
 @app.route('/download', methods=['POST'])
 @rate_limit
